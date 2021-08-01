@@ -38,11 +38,7 @@ class GameLogic:
 
     @staticmethod
     def calculate_score(dice_roll):
-        '''
-        Handle calculating score for dice roll
-        input : Dice roll
-        output: Score
-        '''
+   
         sum=0
         ctr = Counter(dice_roll)
         if len(dice_roll) == 0:
@@ -54,8 +50,7 @@ class GameLogic:
             return 1500
         for i in ctr.most_common():
             sum = sum + all_rules[f'{i}']
-        for not i in ctr.most_common():
-            sum = 0
+        
        
         return sum
          
