@@ -36,28 +36,25 @@ all_rules = {
 
 class GameLogic:
 
+    @staticmethod
+    def calculate_score(dice_roll):
    
-    def calculate_score(dice2):
-        score=0
-        dice=Counter(dice2)
-        x=list(dice2)
-        x.sort()
-        if len(x)==6 and x[0]==1 and x[1]==2 and x[2]==3 and x[3]==4 and x[4]==5 and x[5]==6 :
-            score=score+all_rules['Straight 1- 6']
-
-        elif len(dice.most_common())==3 and dice.most_common()[1][1] == 2 and dice.most_common()[1][1] == 2 and dice.most_common()[2][1] == 2:
-            score=score+all_rules['three pairs']
-
-        else:
-          for i in range(len(dice.most_common())):
-              try:
-                score=score+all_rules[(dice.most_common()[i][0]  ,dice.most_common()[i][1])]
-              except KeyError:
-                  score=score+0
-        return score
+        sum=0
+        ctr = Counter(dice_roll)
+        if len(dice_roll) == 0:
+            return 0
+        if ctr.most_common(1)[0][1] == 1 and len(ctr.most_common()) == 6:
+            print(len(ctr.most_common()))
+            return 1500
+        if ctr.most_common(1)[0][1] == 2 and ctr.most_common(2)[0][1] == 2 and ctr.most_common(3)[0][1] == 2 and len(ctr.most_common()) == 3:
+            return 1500
+        for i in ctr.most_common():
+            sum = sum + all_rules[f'{i}']
         
-
-
+       
+        return sum
+         
+    
     def roll_dice(times=6):
      return tuple(randint(1,6) for _ in range(0, times))
     #  return sample(range(1, 6 + 1), times)
@@ -68,10 +65,6 @@ class GameLogic:
 
 if __name__ == "__main__":
     g = GameLogic
-    d = g.roll_dice(6)
-    print(d)
-    result = g.calculate_score(d)
-    print(result)
-
+    
 
  
