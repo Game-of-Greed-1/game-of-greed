@@ -3,8 +3,7 @@ from collections import Counter
 from tests.flo import *
 
 
-def __init__(self):
-        pass 
+
 
     
 roles = {   
@@ -33,37 +32,17 @@ class GameLogic:
         elif len(num) == 3 and num[2][1] == 2:
             score = 1500
             return score
-            
+
         for x in num:
             score += roles[x]
         return score
     
-
+    
     def roll_dice(times=6):
         return tuple(randint(1,6) for _ in range(0, times))
     #  return sample(range(1, 6 + 1), times)
-
-
-class Banker:
-
-    def __init__(self):
-        self.shelved = 0
-        self.balance= 0
- 
-    def shelf(self,num):
-        self.shelved += num
-   
-    def bank(self):
-        self.balance += self.shelved
-        self.shelved = 0
-        return self.balance
-
-    def clear_shelf(self):
-        self.shelved = 0
     
-
-
-
+    
 
 if __name__ == "__main__":
     new_game = Game()
