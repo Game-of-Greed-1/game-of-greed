@@ -14,11 +14,14 @@ roles = {
     (4,5):1200, (4,6):1600, (6,6):2400, (6,5):1800,
     (6,4):1200, (6,3):600, (5,6):2000, (5,5):1500,
     (5,4):1000, (5,3):500, (1,2):200, (2,2):0,
-    (3,2):0, (4,2):0, (5,2):100,(6,2):0, 
-    (2,1):0, (3,1):0, (4,1):0, (6,1):0,
+    (3,2):0,    (4,2):0, (5,2):100,(6,2):0, 
+    (2,1):0, (  3,1):0, (4,1):0, (6,1):0,
     }
 
 class GameLogic:
+
+    def __init__(self, currnt_round = 0):
+        self.current_round = currnt_round
 
     @staticmethod
     def calculate_score(test_input:tuple) -> int:
@@ -42,6 +45,26 @@ class GameLogic:
         return tuple(randint(1,6) for _ in range(0, times))
     #  return sample(range(1, 6 + 1), times)
     
+    @staticmethod
+    def validate_keepers(roll:tuple, keepers:tuple) -> int:
+        roll = list(roll)
+        for dieces in keepers:
+            if dieces not in roll:
+                return False
+            roll.remove(dieces) 
+        return True
+
+    def get_scorers(all_dice :tuple) -> int():     
+        all_score = GameLogic.calculate_score(all_dice)
+        scorers = []
+        if all_score:
+            for i in range(len(all_dice)):
+                greed_roll = all_dice[:i] + all_dice[i + 1:]
+                greed_score = GameLogic.calculate_score(greed_roll)
+                if greed_score != all_score:
+                    scorers.append(all_dice[i])
+
+        return tuple(scorers)
     
 
 if __name__ == "__main__":
