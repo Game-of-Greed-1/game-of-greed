@@ -4,7 +4,7 @@ import sys
 
 class Game(GameLogic, Banker): 
     
-    def __init__(self, num_rounds=6):
+    def __init__(self, num_rounds=5):
         self.banker = Banker()
         self.num_rounds = num_rounds
 
@@ -14,6 +14,7 @@ class Game(GameLogic, Banker):
             roller (function, optional): Allows passing in a custom dice roller function.
                 Defaults to None.
         """
+        self.num_rounds += 1
         self.round = 0
         self.remaining_dice = 6
         self._roller = roller or GameLogic.roll_dice
@@ -58,7 +59,7 @@ class Game(GameLogic, Banker):
 
     def print_roll(self, roll):
         re_roll = ' '.join(map(str, (roll)))
-        print("*** ", re_roll, " ***")
+        print(f"*** {re_roll} ***")
 
     def bank_points(self):
         round_score = self.banker.shelved
@@ -76,16 +77,21 @@ class Game(GameLogic, Banker):
     def new_round(self):
         self.remaining_dice_count = self.remaining_dice 
         roll = self.roll_the_dice()
-        user_input = input("Enter dice to keep, or (q)uit:\n> ")
-        while user_input != "q":  
+        print('Enter dice to keep, or (q)uit:')
+        user_input = input("> ")
+        while user_input != "q" or self.num_rounds == self.round:  
             tuple_die = self.input_to_tuple(user_input)
             if not GameLogic.validate_keepers(roll, tuple_die): 
                 print("Cheater!!! Or possibly made a typo...")
                 self.print_roll(roll)
-                user_input = input("Enter dice to keep, or (q)uit:\n> ")
+                print('Enter dice to keep, or (q)uit:')
+                user_input = input("> ")
             else:   
                 self.shelf_dice(tuple_die)
-                bank_choice = input("(r)oll again, (b)ank your points or (q)uit:\n> ")
+                print('(r)oll again, (b)ank your points or (q)uit:')
+                bank_choice = input("> ")
+                if bank_choice == "q" or bank_choice == "quit" or self.num_rounds == self.round +1:
+                    self.thank_for_playing() 
                 if bank_choice == "r" or bank_choice == "roll":
                     if self.remaining_dice_count == 0:
                         self.remaining_dice_count = 6
@@ -93,14 +99,13 @@ class Game(GameLogic, Banker):
                     if GameLogic.calculate_score(roll) == 0:
                         self.zilch()
                         return
-                    user_input = input("Enter dice to keep, or (q)uit:\n> ")
+                    print('Enter dice to keep, or (q)uit:')    
+                    user_input = input("> ")
                 if bank_choice == "b" or bank_choice == "bank":
                     self.bank_points()
                     return
-                if bank_choice == "q" or bank_choice == "quit":
-                    self.thank_for_playing() 
         self.thank_for_playing()
-    
+        
     def play_here(self):
         for i in range(1, self.num_rounds):
             self.round += 1
