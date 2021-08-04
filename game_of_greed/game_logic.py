@@ -1,95 +1,72 @@
-import collections
-from itertools import count
 from random import randint, sample, random
+from collections import Counter
+from tests.flo import *
 
-class GameLogic():
-    
 
-    def __init__(self):
-        pass 
+
+
     
-    def calculate_score(test_input):
+roles = {   
+    (1,1):100, (5,1):50, (1,3):1000, (1,4):2000,
+    (1,5):3000, (1,6):4000, (2,3):200, (2,4):400,
+    (2,5):600, (2,6):800, (3,3):300, (3,4):600,
+    (3,5):900, (3,6):1200, (4,3):400, (4,4):800, 
+    (4,5):1200, (4,6):1600, (6,6):2400, (6,5):1800,
+    (6,4):1200, (6,3):600, (5,6):2000, (5,5):1500,
+    (5,4):1000, (5,3):500, (1,2):200, (2,2):0,
+    (3,2):0,    (4,2):0, (5,2):100,(6,2):0, 
+    (2,1):0, (  3,1):0, (4,1):0, (6,1):0,
+    }
+
+class GameLogic:
+
+    def __init__(self, currnt_round = 0):
+        self.current_round = currnt_round
+
+    @staticmethod
+    def calculate_score(test_input:tuple) -> int:
         score = 0
-        pairs =0 
-        num = (collections.Counter(test_input))
+        num = Counter(test_input).most_common()
+        stright = sorted(test_input)
         
-        if num == None:
-            return 0
-
-
-        if 1 in num and 2 in num and 3 in num and 4 in num and 5 in num and 6 in num:
-            
-            score+=1500
+        if stright == [1,2,3,4,5,6]:
+            score = 1500
             return score
-        
-        if (num[1] == 1) and 5 in num:
-            score+=150
+        elif len(num) == 3 and num[2][1] == 2:
+            score = 1500
             return score
 
-        if (num[1] == 3) and 5 in num:
-            score+=1050
-            return score
-
-        for i in num:
-            
-
-            if num[i] == 2:
-                pairs = pairs + 1 
-                if pairs == 3 :
-                    score = 0
-                    score = score +1500
-                    return score
-            
-            if i == 5 and num[i] < 3:
-                score = score + (num[i]*50)
-                return score
-
-
-            if i == 1 and num[i] < 3:
-                score = score + (num[i]*100)
-                return score
-             
-            if num[i] >= 3 and i == 1:
-                score = score + 1000
-                num[i] = num[i] - 3
-                for i in range (num[i]):
-                    score = score + 1000
-                    continue
-            
-            if num[i] == 3   and i != 1:
-                score = score + (i*100)
-                num[i] = num[i] - 3
-                for i in range (num[i]):
-                    score = score + 100
-                    continue
-            
-            if num[i] > 3   and i != 1:
-                score = score + ((num[i]-2)*i*100)
-                return score
-                continue
+        for x in num:
+            score += roles[x]
         return score
-
+    
+    
     def roll_dice(times=6):
         return tuple(randint(1,6) for _ in range(0, times))
     #  return sample(range(1, 6 + 1), times)
-class Banker:
+    
+    @staticmethod
+    def validate_keepers(roll:tuple, keepers:tuple) -> int:
+        roll = list(roll)
+        for dieces in keepers:
+            if dieces not in roll:
+                return False
+            roll.remove(dieces) 
+        return True
 
-    def __init__(self):
-        self.shelved = 0
-        self.balance= 0
- 
-    def shelf(self,num):
-        self.shelved += num
-   
-    def bank(self):
-        self.balance += self.shelved
-        self.shelved = 0
-        return self.balance
+    def get_scorers(all_dice :tuple) -> int():     
+        all_score = GameLogic.calculate_score(all_dice)
+        scorers = []
+        if all_score:
+            for i in range(len(all_dice)):
+                greed_roll = all_dice[:i] + all_dice[i + 1:]
+                greed_score = GameLogic.calculate_score(greed_roll)
+                if greed_score != all_score:
+                    scorers.append(all_dice[i])
 
-    def clear_shelf(self):
-        self.shelved = 0
+        return tuple(scorers)
+    
 
 if __name__ == "__main__":
-    new_game = GameLogic()
-
-    print(new_game)
+    new_game = Game()
+    new_game.play()
